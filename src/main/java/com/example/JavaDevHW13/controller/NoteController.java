@@ -1,7 +1,7 @@
 package com.example.JavaDevHW13.controller;
 
-import com.example.JavaDevHW13.data.note.Note;
-import com.example.JavaDevHW13.service.NoteService;
+import com.example.JavaDevHW13.service.dto.NoteDto;
+import com.example.JavaDevHW13.service.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,21 +29,21 @@ public class NoteController {
     @PostMapping("/add")
     public String createNewNote(@RequestParam String title,
                                 @RequestParam String content) {
-        Note note = Note.builder()
+        NoteDto dto = NoteDto.builder()
                 .title(title)
                 .content(content)
                 .build();
-        service.add(note);
+        service.add(dto);
 
         return "redirect:/note/list";
     }
 
     @GetMapping("/edit")
     public ModelAndView showEditNotePage(@RequestParam Long id) {
-        Note note = service.getById(id);
+        NoteDto dto = service.getById(id);
 
         ModelAndView mav = new ModelAndView("edit");
-        mav.addObject("note", note);
+        mav.addObject("note", dto);
 
         return mav;
     }
@@ -52,10 +52,13 @@ public class NoteController {
     public String editNote(@PathVariable Long id,
                            @RequestParam String title,
                            @RequestParam String content) {
-        Note note = service.getById(id);
-        note.setTitle(title);
-        note.setContent(content);
-        service.update(note);
+        NoteDto dto = NoteDto
+                .builder()
+                .id(id)
+                .title(title)
+                .content(content)
+                .build();
+        service.update(dto);
 
         return "redirect:/note/list";
     }

@@ -1,4 +1,4 @@
-package com.example.JavaDevHW13.service;
+package com.example.JavaDevHW13.service.service;
 
 import java.util.List;
 

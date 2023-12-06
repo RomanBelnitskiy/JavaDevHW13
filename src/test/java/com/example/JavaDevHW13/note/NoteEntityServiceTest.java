@@ -1,7 +1,7 @@
 package com.example.JavaDevHW13.note;
 
-import com.example.JavaDevHW13.data.note.Note;
-import com.example.JavaDevHW13.service.NoteService;
+import com.example.JavaDevHW13.data.entity.NoteEntity;
+import com.example.JavaDevHW13.service.service.NoteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class NoteServiceTest {
+class NoteEntityServiceTest {
     private NoteService service;
 
     @BeforeEach
@@ -20,26 +20,26 @@ class NoteServiceTest {
     }
 
     @Test
-    @DisplayName("Method add sets id value to note")
+    @DisplayName("Method add sets id value to entity")
     void addNewNotes_SetsRightIdToNote() {
-        Note note1 = Note.builder()
+        NoteEntity noteEntity1 = NoteEntity.builder()
                 .title("Note title")
                 .content("Note body")
                 .build();
-        Note note2 = Note.builder()
+        NoteEntity noteEntity2 = NoteEntity.builder()
                 .title("Note title")
                 .content("Note body")
                 .build();
 
-        service.add(note1);
-        service.add(note2);
+        service.add(noteEntity1);
+        service.add(noteEntity2);
 
-        assertEquals(1L, note1.getId());
-        assertEquals(2L, note2.getId());
+        assertEquals(1L, noteEntity1.getId());
+        assertEquals(2L, noteEntity2.getId());
     }
 
     @Test
-    @DisplayName("Method add throws NPE when note is null")
+    @DisplayName("Method add throws NPE when entity is null")
     void addNewNote_ThrowsException_IfNoteIsNull() {
         assertThrows(NullPointerException.class, () -> service.add(null));
     }
@@ -47,36 +47,36 @@ class NoteServiceTest {
     @Test
     @DisplayName("Method listAll returns list with two notes")
     void listAllNotes_ReturnListWithTwoNotes() {
-        Note note1 = Note.builder()
+        NoteEntity noteEntity1 = NoteEntity.builder()
                 .title("Note1 title")
                 .content("Note1 body")
                 .build();
-        Note note2 = Note.builder()
+        NoteEntity noteEntity2 = NoteEntity.builder()
                 .title("Note2 title")
                 .content("Note2 body")
                 .build();
 
-        service.add(note1);
-        service.add(note2);
+        service.add(noteEntity1);
+        service.add(noteEntity2);
 
-        List<Note> notes = service.listAll();
+        List<NoteEntity> noteEntities = service.listAll();
 
-        assertEquals(2, notes.size());
+        assertEquals(2, noteEntities.size());
     }
 
     @Test
-    @DisplayName("Method getById returns right note")
+    @DisplayName("Method getById returns right entity")
     void getById_ReturnsRightNote() {
-        Note note1 = Note.builder()
+        NoteEntity noteEntity1 = NoteEntity.builder()
                 .title("Note1 title")
                 .content("Note1 body")
                 .build();
 
-        service.add(note1);
+        service.add(noteEntity1);
 
-        Note note = service.getById(note1.getId());
+        NoteEntity noteEntity = service.getById(noteEntity1.getId());
 
-        assertEquals(note1, note);
+        assertEquals(noteEntity1, noteEntity);
     }
 
     @Test
@@ -88,23 +88,23 @@ class NoteServiceTest {
     @Test
     @DisplayName("Method deleteById removes one of two notes")
     void deleteById_RemovesOneOfTwoNotes() {
-        Note note1 = Note.builder()
+        NoteEntity noteEntity1 = NoteEntity.builder()
                 .title("Note1 title")
                 .content("Note1 body")
                 .build();
-        Note note2 = Note.builder()
+        NoteEntity noteEntity2 = NoteEntity.builder()
                 .title("Note2 title")
                 .content("Note2 body")
                 .build();
 
-        service.add(note1);
-        service.add(note2);
+        service.add(noteEntity1);
+        service.add(noteEntity2);
 
-        service.deleteById(note1.getId());
+        service.deleteById(noteEntity1.getId());
 
-        List<Note> notes = service.listAll();
+        List<NoteEntity> noteEntities = service.listAll();
 
-        assertEquals(1, notes.size());
+        assertEquals(1, noteEntities.size());
     }
 
     @Test
@@ -120,30 +120,30 @@ class NoteServiceTest {
     }
 
         @Test
-    @DisplayName("Method update saves right note")
+    @DisplayName("Method update saves right entity")
     void update_SavesRightNote() {
-        Note note1 = Note.builder()
+        NoteEntity noteEntity1 = NoteEntity.builder()
                 .title("Note1 title")
                 .content("Note1 body")
                 .build();
 
-        service.add(note1);
+        service.add(noteEntity1);
 
-        Note note = service.getById(note1.getId());
-        note.setTitle("New note title");
-        note.setContent("New note content");
+        NoteEntity noteEntity = service.getById(noteEntity1.getId());
+        noteEntity.setTitle("New entity title");
+        noteEntity.setContent("New entity content");
 
-        service.update(note);
+        service.update(noteEntity);
 
-        Note updatedNote = service.getById(note.getId());
+        NoteEntity updatedNoteEntity = service.getById(noteEntity.getId());
 
-        assertEquals(1, updatedNote.getId());
-        assertEquals("New note title", updatedNote.getTitle());
-        assertEquals("New note content", updatedNote.getContent());
+        assertEquals(1, updatedNoteEntity.getId());
+        assertEquals("New entity title", updatedNoteEntity.getTitle());
+        assertEquals("New entity content", updatedNoteEntity.getContent());
     }
 
     @Test
-    @DisplayName("Method update throws NPE when note is null")
+    @DisplayName("Method update throws NPE when entity is null")
     void update_ThrowsExceptionWhenNoteIsNull() {
         assertThrows(NullPointerException.class, () -> service.update(null));
     }
@@ -151,21 +151,21 @@ class NoteServiceTest {
     @Test
     @DisplayName("Method update throws NPE when notes id is null")
     void update_ThrowsExceptionWhenNotesIdIsNull() {
-        Note note = Note.builder()
+        NoteEntity noteEntity = NoteEntity.builder()
                 .title("Note title")
                 .content("Note body")
                 .build();
-        assertThrows(NullPointerException.class, () -> service.update(note));
+        assertThrows(NullPointerException.class, () -> service.update(noteEntity));
     }
 
     @Test
-    @DisplayName("Method update throws NSEE when there is no such note in map")
+    @DisplayName("Method update throws NSEE when there is no such entity in map")
     void update_ThrowsExceptionWhenNoteIsAbsent() {
-        Note note = Note.builder()
+        NoteEntity noteEntity = NoteEntity.builder()
                 .id(1L)
                 .title("Note title")
                 .content("Note body")
                 .build();
-        assertThrows(NoSuchElementException.class, () -> service.update(note));
+        assertThrows(NoSuchElementException.class, () -> service.update(noteEntity));
     }
 }
