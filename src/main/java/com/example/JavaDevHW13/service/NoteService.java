@@ -1,5 +1,7 @@
-package com.example.JavaDevHW13.note;
+package com.example.JavaDevHW13.service;
 
+import com.example.JavaDevHW13.data.note.Note;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -60,5 +62,26 @@ public class NoteService implements ServiceBase<Note, Long> {
     public Note getById(Long id) {
         requireNonNull(id);
         return notes.get(id);
+    }
+
+    @PostConstruct
+    private void testListOfNotes() {
+        notes.put(1L, Note.builder()
+                .id(1L)
+                .title("My first note")
+                .content("Content of first note")
+                .build());
+
+        notes.put(2L, Note.builder()
+                .id(2L)
+                .title("My second note")
+                .content("Content of second note")
+                .build());
+
+        notes.put(3L, Note.builder()
+                .id(3L)
+                .title("My third note")
+                .content("Content of third note")
+                .build());
     }
 }

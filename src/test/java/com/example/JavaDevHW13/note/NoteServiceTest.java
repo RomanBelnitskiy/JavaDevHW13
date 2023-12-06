@@ -1,5 +1,7 @@
 package com.example.JavaDevHW13.note;
 
+import com.example.JavaDevHW13.data.note.Note;
+import com.example.JavaDevHW13.service.NoteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

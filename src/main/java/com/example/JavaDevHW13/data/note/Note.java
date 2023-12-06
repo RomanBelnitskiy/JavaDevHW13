@@ -1,4 +1,4 @@
-package com.example.JavaDevHW13.note;
+package com.example.JavaDevHW13.data.note;
 
 import lombok.Builder;
 import lombok.Data;
