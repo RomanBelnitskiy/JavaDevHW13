@@ -4,15 +4,19 @@ import com.example.JavaDevHW13.data.entity.NoteEntity;
 import com.example.JavaDevHW13.data.repository.NoteRepository;
 import com.example.JavaDevHW13.service.dto.NoteDto;
 import com.example.JavaDevHW13.service.mapper.NoteMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import static java.util.Objects.requireNonNull;
 
 @Service
+@RequiredArgsConstructor
 public class NoteService implements ServiceBase<NoteDto, Long> {
-    @Autowired private NoteRepository repository;
-    @Autowired private NoteMapper mapper;
+    private final NoteRepository repository;
+    private final NoteMapper mapper;
 
     @Override
     public List<NoteDto> listAll() {
@@ -21,6 +25,8 @@ public class NoteService implements ServiceBase<NoteDto, Long> {
 
     @Override
     public NoteDto add(NoteDto noteDto) {
+        requireNonNull(noteDto);
+
         NoteEntity entity = mapper.dtoToEntity(noteDto);
         entity = repository.save(entity);
 
@@ -29,16 +35,29 @@ public class NoteService implements ServiceBase<NoteDto, Long> {
 
     @Override
     public void deleteById(Long id) {
+        requireNonNull(id);
+
         repository.deleteById(id);
     }
 
     @Override
     public void update(NoteDto dto) {
-        repository.update(mapper.dtoToEntity(dto));
+        requireNonNull(dto);
+        requireNonNull(dto.getId());
+
+        repository.findById(dto.getId())
+                .orElseThrow(() -> new NoSuchElementException());
+
+        repository.save(mapper.dtoToEntity(dto));
     }
 
     @Override
     public NoteDto getById(Long id) {
-        return mapper.entityToDto(repository.findById(id));
+        requireNonNull(id);
+
+        NoteEntity entity = repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException());
+
+        return mapper.entityToDto(entity);
     }
 }

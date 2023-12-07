@@ -2,13 +2,19 @@ package com.example.JavaDevHW13.controller;
 
 import com.example.JavaDevHW13.service.dto.NoteDto;
 import com.example.JavaDevHW13.service.service.NoteService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/note")
+@Validated
 public class NoteController {
     @Autowired
     private NoteService service;
@@ -27,8 +33,8 @@ public class NoteController {
     }
 
     @PostMapping("/add")
-    public String createNewNote(@RequestParam String title,
-                                @RequestParam String content) {
+    public String createNewNote(@RequestParam @NotBlank @Size(min = 3, max=150) String title,
+                                @RequestParam @NotBlank @Size(min = 3, max=255) String content) {
         NoteDto dto = NoteDto.builder()
                 .title(title)
                 .content(content)
@@ -39,7 +45,7 @@ public class NoteController {
     }
 
     @GetMapping("/edit")
-    public ModelAndView showEditNotePage(@RequestParam Long id) {
+    public ModelAndView showEditNotePage(@RequestParam @NotNull @Min(1) Long id) {
         NoteDto dto = service.getById(id);
 
         ModelAndView mav = new ModelAndView("edit");
@@ -49,9 +55,9 @@ public class NoteController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editNote(@PathVariable Long id,
-                           @RequestParam String title,
-                           @RequestParam String content) {
+    public String editNote(@PathVariable @NotNull @Min(1) Long id,
+                           @RequestParam @NotBlank @Size(min = 3, max=150) String title,
+                           @RequestParam @NotBlank @Size(min = 3, max=255) String content) {
         NoteDto dto = NoteDto
                 .builder()
                 .id(id)
@@ -64,7 +70,7 @@ public class NoteController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteNote(@PathVariable Long id) {
+    public String deleteNote(@PathVariable @NotNull @Min(1) Long id) {
         service.deleteById(id);
 
         return "redirect:/note/list";

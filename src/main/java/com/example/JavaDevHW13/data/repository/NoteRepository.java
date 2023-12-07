@@ -4,9 +4,10 @@ import com.example.JavaDevHW13.data.entity.NoteEntity;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-
-import static java.util.Objects.requireNonNull;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class NoteRepository {
@@ -18,37 +19,23 @@ public class NoteRepository {
                 .toList();
     }
 
-    public NoteEntity findById(Long id) {
-        requireNonNull(id);
-        return notes.get(id);
+    public Optional<NoteEntity> findById(Long id) {
+        NoteEntity entity = notes.get(id);
+        if (entity == null) {
+            return Optional.empty();
+        }
+        return Optional.of(entity);
     }
 
     public NoteEntity save(NoteEntity noteEntity) {
-        requireNonNull(noteEntity);
-
         noteEntity.setId(getNextId());
         notes.put(noteEntity.getId(), noteEntity);
 
         return noteEntity;
     }
 
-    public void update(NoteEntity noteEntity) {
-        requireNonNull(noteEntity);
-        requireNonNull(noteEntity.getId());
-
-        if (!notes.containsKey(noteEntity.getId())) {
-            throw new NoSuchElementException();
-        }
-
-        notes.put(noteEntity.getId(), noteEntity);
-    }
-
-    public void deleteById(Long id) {
-        requireNonNull(id);
-        NoteEntity noteEntity = notes.remove(id);
-        if (noteEntity == null) {
-            throw new NoSuchElementException();
-        }
+    public NoteEntity deleteById(Long id) {
+        return notes.remove(id);
     }
 
     private Long getNextId() {
