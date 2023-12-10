@@ -28,7 +28,9 @@ public class NoteRepository {
     }
 
     public NoteEntity save(NoteEntity noteEntity) {
-        noteEntity.setId(getNextId());
+        if (noteEntity.getId() == null) {
+            noteEntity.setId(getNextId());
+        }
         notes.put(noteEntity.getId(), noteEntity);
 
         return noteEntity;

@@ -20,17 +20,17 @@ public class NoteService implements ServiceBase<NoteDto, Long> {
 
     @Override
     public List<NoteDto> listAll() {
-        return mapper.entitiesListToDto(repository.findAll());
+        return mapper.toDtos(repository.findAll());
     }
 
     @Override
     public NoteDto add(NoteDto noteDto) {
         requireNonNull(noteDto);
 
-        NoteEntity entity = mapper.dtoToEntity(noteDto);
+        NoteEntity entity = mapper.toEntity(noteDto);
         entity = repository.save(entity);
 
-        return mapper.entityToDto(entity);
+        return mapper.toDto(entity);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class NoteService implements ServiceBase<NoteDto, Long> {
         repository.findById(dto.getId())
                 .orElseThrow(() -> new NoSuchElementException());
 
-        repository.save(mapper.dtoToEntity(dto));
+        repository.save(mapper.toEntity(dto));
     }
 
     @Override
@@ -58,6 +58,6 @@ public class NoteService implements ServiceBase<NoteDto, Long> {
         NoteEntity entity = repository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException());
 
-        return mapper.entityToDto(entity);
+        return mapper.toDto(entity);
     }
 }

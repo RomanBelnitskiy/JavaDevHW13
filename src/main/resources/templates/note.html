@@ -44,10 +44,11 @@
                   >Edit</a
                 >
                 <form
-                  th:action="'/note/delete/'+${note.id}"
+                  action="/note/delete"
                   method="post"
                   style="display: inline-block"
                 >
+                  <input name="id" th:value="${note.id}" hidden />
                   <button role="button" type="submit" class="btn btn-danger">
                     Delete
                   </button>

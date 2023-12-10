@@ -1,11 +1,13 @@
-package com.example.JavaDevHW13.controller;
+package com.example.JavaDevHW13.controller.controller;
 
+import com.example.JavaDevHW13.controller.request.CreateNoteRequest;
+import com.example.JavaDevHW13.controller.request.UpdateNoteRequest;
 import com.example.JavaDevHW13.service.dto.NoteDto;
+import com.example.JavaDevHW13.service.mapper.NoteMapper;
 import com.example.JavaDevHW13.service.service.NoteService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class NoteController {
     @Autowired
     private NoteService service;
+    @Autowired
+    private NoteMapper mapper;
 
     @GetMapping("/list")
     public ModelAndView showAllNotesPage() {
@@ -29,17 +33,13 @@ public class NoteController {
     @GetMapping("/add")
     public ModelAndView showAddNewNotePage() {
         ModelAndView mav = new ModelAndView("add");
+        mav.addObject("note", new CreateNoteRequest());
         return mav;
     }
 
-    @PostMapping("/add")
-    public String createNewNote(@RequestParam @NotBlank @Size(min = 3, max=150) String title,
-                                @RequestParam @NotBlank @Size(min = 3, max=255) String content) {
-        NoteDto dto = NoteDto.builder()
-                .title(title)
-                .content(content)
-                .build();
-        service.add(dto);
+    @PostMapping(value = "/add")
+    public String createNewNote(@Valid @NotNull CreateNoteRequest request) {
+        service.add(mapper.toDto(request));
 
         return "redirect:/note/list";
     }
@@ -54,23 +54,16 @@ public class NoteController {
         return mav;
     }
 
-    @PostMapping("/edit/{id}")
-    public String editNote(@PathVariable @NotNull @Min(1) Long id,
-                           @RequestParam @NotBlank @Size(min = 3, max=150) String title,
-                           @RequestParam @NotBlank @Size(min = 3, max=255) String content) {
-        NoteDto dto = NoteDto
-                .builder()
-                .id(id)
-                .title(title)
-                .content(content)
-                .build();
-        service.update(dto);
+    @PostMapping("/edit")
+    public String editNote(@RequestParam @NotNull @Min(1) Long id,
+                           @Valid @NotNull UpdateNoteRequest request) {
+        service.update(mapper.toDto(id, request));
 
         return "redirect:/note/list";
     }
 
-    @PostMapping("/delete/{id}")
-    public String deleteNote(@PathVariable @NotNull @Min(1) Long id) {
+    @PostMapping("/delete")
+    public String deleteNote(@RequestParam @NotNull @Min(1) Long id) {
         service.deleteById(id);
 
         return "redirect:/note/list";
